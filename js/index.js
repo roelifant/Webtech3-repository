@@ -2,18 +2,14 @@ class Note {
   constructor(title) {
     this.title = title;
     this.element = this.createElement(title);
-    
   }
   
   createElement(title){
     let newNote = document.createElement('div');
-      newNote.setAttribute("class", "card");
-      newNote.innerHTML = `<p>${title}</p><a href="#" class="card-remove">Remove</a>`;
+    newNote.setAttribute("class", "card");
+    newNote.innerHTML = `<p>${title}</p><a href="#" class="card-remove">Remove</a>`;
     
     let removeBtn = newNote.children[1];
-    removeBtn.addEventListener('click', function(){
-        console.log(title);
-    });
     removeBtn.addEventListener('click', this.remove.bind(newNote));
     
     return newNote;
@@ -21,7 +17,6 @@ class Note {
   
   add(){
     document.querySelector(".notes").appendChild(this.element);
-    
   }
   
   saveToStorage(tekst){
@@ -33,31 +28,32 @@ class Note {
   }
   
   remove(){
-    // HINT🤩 the meaning of 'this' was set by bind() in the createElement function
-    // in this function, 'this' will refer to the current note element
-    //haal titel uit array
+    //remove title from array
     let cardTitle = this.children[0].innerHTML;
     var test = notesData.indexOf(cardTitle);
     if(test !== -1){notesData.splice(test, 1);};
     console.log(notesData);
-    //sla array opnieuw op
+    //save array again
     let localstorageNotesData = JSON.stringify(notesData);
     localStorage.setItem("notes", localstorageNotesData);
-    //haal element ook weg tijdens runtime
-    this.style.display = "none";
-    
-  } 
+    //remove element during runtime
+    this.parentNode.removeChild(this);
+  }
 }
 
 class App {
   constructor() {
     console.log("👊🏼 The Constructor!");
-  
-    // HINT🤩
     // clicking the button should work
-    // pressing the enter key should also work
     this.btnAdd = document.getElementById("btnAddNote");
     this.btnAdd.addEventListener("click", this.createNote.bind(this));
+    // pressing the enter key should also work
+    onkeyup = function(e){
+        let key = e.keyCode;
+        if(key == 13){
+            document.getElementById("btnAddNote").click();
+        }
+    }
     this.loadNotesFromStorage();
   }
   
@@ -91,12 +87,9 @@ class App {
   }
   
   reset(){
-    // this function should reset the form
       document.getElementById("txtAddNote").value = "";
   }
-  
 }
 
 let notesData = [];
-
 let app = new App();

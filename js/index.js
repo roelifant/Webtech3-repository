@@ -20,21 +20,21 @@ class Note {
   }
   
   saveToStorage(tekst){
-      console.log(notesData);
-      notesData.push(tekst);
-      console.log(notesData);
-      let localstorageNotesData = JSON.stringify(notesData);
+      console.log(app.notesData);
+      app.notesData.push(tekst);
+      console.log(app.notesData);
+      let localstorageNotesData = JSON.stringify(app.notesData);
       localStorage.setItem("notes", localstorageNotesData);
   }
   
   remove(){
     //remove title from array
     let cardTitle = this.children[0].innerHTML;
-    var test = notesData.indexOf(cardTitle);
-    if(test !== -1){notesData.splice(test, 1);};
-    console.log(notesData);
+    var test = app.notesData.indexOf(cardTitle);
+    if(test !== -1){app.notesData.splice(test, 1);};
+    console.log(app.notesData);
     //save array again
-    let localstorageNotesData = JSON.stringify(notesData);
+    let localstorageNotesData = JSON.stringify(app.notesData);
     localStorage.setItem("notes", localstorageNotesData);
     //remove element during runtime
     this.parentNode.removeChild(this);
@@ -44,6 +44,9 @@ class Note {
 class App {
   constructor() {
     console.log("👊🏼 The Constructor!");
+      
+      
+    this.notesData = [];
     // clicking the button should work
     this.btnAdd = document.getElementById("btnAddNote");
     this.btnAdd.addEventListener("click", this.createNote.bind(this));
@@ -64,13 +67,13 @@ class App {
       if((localStorage.getItem("notes"))!==null){
           console.log("notesData is array uit storage");
           let loaded = JSON.parse(localStorage.getItem("notes"));
-          notesData = loaded;
-          console.log(notesData);
+          this.notesData = loaded;
+          console.log(this.notesData);
           
           let i = 0;
-          for(i = 0; i < notesData.length; i++){
-              console.log(notesData[i]);
-              let note = new Note(notesData[i]);
+          for(i = 0; i < this.notesData.length; i++){
+              console.log(this.notesData[i]);
+              let note = new Note(this.notesData[i]);
               note.add();
           }
       } else {
@@ -91,5 +94,4 @@ class App {
   }
 }
 
-let notesData = [];
 let app = new App();
